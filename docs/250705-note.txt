@@ -1,8 +1,6 @@
-// 250705-note
+## `build.gradle.kts`
 
-
-// 
-/ build.gradle.kts
+#### `build.gradle.kts`
 ```
 plugins {
     id("org.springframework.boot") version "3.2.5"
@@ -10,6 +8,9 @@ plugins {
 }
 ```
 위처럼만 선언해두었더니 빌드할 때 아래와 같은 에러가 난다.
+
+
+#### error
 ```
 survey:main: Could not find org.springframework.boot:spring-boot-starter-data-jpa:.
 Required by:
@@ -19,8 +20,8 @@ Possible solution:
  - Declare repository providing the artifact, see the documentation at https://docs.gradle.org/current/userguide/declaring_repositories.html
 ```
 
-`build.gradle.kts` 에서 plugins 선언하는 부분에 `spring.dependency-management` 를 추가해 준다
-/ build.gradle.kts
+
+#### `build.gradle.kts`
 ```
 plugins {
     id("org.springframework.boot") version "3.2.5"
@@ -28,23 +29,24 @@ plugins {
     id("java")
 }
 ```
+`build.gradle.kts` 에서 plugins 선언하는 부분에 `spring.dependency-management` 를 추가해 준다
 dependency-management 는 의존성 선언해둔 패키지들 사이의 버전을 알아서 관리해준다.
 어차피 spring 만 쓸 거라서 dependency-management 가 필요 없을 줄 알았다.
 그런데 이게 딱 springboot 프레임워크만 쓸 경우에 해당하는 것 같다.
-`spring-boot-starter-web` / `spring-boot-starter-test` 같은 기본적인 spring boot 의존성들을 쓸 때도 dependency-management 로 버전 관리를 해줘야 한다.
+`spring-boot-starter-web` / `spring-boot-starter-test` 같은 기본적인 spring boot 관련 의존성들을 쓸 때도 dependency-management 로 버전 관리를 해줘야 한다.
 찾아보면 springboot 3.2 버전 이상이면 dependency-management 기능이 내장돼 있어서 명시하지 않아도 된다고 한다.
 그런데 이유는 모르겠고 같은 에러가 계속 나서 명시해서 선언해두었다.
 
 
 
 
-
-// @MappedSuperclass
+## Entity 공통화
 엔티티를 여러 개 구현할 때 엔티티마다 겹치는 필드가 있을 수 있다.
 예를 들어 created time 이나 updated time 이 그렇다.
 그럴 때 `@MappedSuperclass`를 쓰면 응집도를 높일 수 있다.
 
-/ BaseEntity - 공통 필드 선언
+
+#### BaseEntity - 공통 필드 선언
 ```
 import jakarta.persistence.*;
 
@@ -70,7 +72,9 @@ public abstract class BaseEntity {
     }
 }
 ```
-/ SurveyRoot - BaseEntity를 상속하여 구현
+
+
+#### SurveyRoot - BaseEntity를 상속하여 구현
 ```
 @Entity
 @Table(name = "survey_root")
@@ -80,7 +84,9 @@ public class SurveyRoot extends BaseEntity {
 
 }
 ```
-/ SurveyItem - BaseEntity를 상속하여 구현
+
+
+#### SurveyItem - BaseEntity를 상속하여 구현
 ```
 @Entity
 @Table(name = "survey_item")
@@ -91,15 +97,19 @@ public class SurveyItem extends BaseEntity {
 }
 ```
 
-/ @MappedSuperclass vs @Inheritance 차이
-`@MappedSuperclass`: 상속된 엔티티가 부모 필드만 상속하고 부모 테이블은 생성하지 않음
-`@Inheritance`: 상속 계층을 단일/조인/테이블-퍼-클래스 전략으로 실제 테이블 관계로 매핑
 
-/ created time 과 updated time 을 애노테이션으로 지정하기
+#### @MappedSuperclass vs @Inheritance 차이
+- `@MappedSuperclass`: 상속된 엔티티가 부모 필드만 상속하고 부모 테이블은 생성하지 않음
+- `@Inheritance`: 상속 계층을 단일/조인/테이블-퍼-클래스 전략으로 실제 테이블 관계로 매핑
+
+
+## created time 과 updated time 을 애노테이션으로 지정하기
 테이블에 데이터를 넣거나 수정할 때 시간을 기록하는 기능은 많은 애플리케이션에서 공통적으로 쓴다.
 이 기능을 코드 한 줄로 손쉽게 지정할 수 있는 애노테이션을 제공한다.
 `@CreationTimestamp` 과 `@UpdateTimestamp`이다.
 
+
+#### `@CreationTimestamp` 과 `@UpdateTimestamp`
 ```
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -119,11 +129,8 @@ public abstract class BaseEntity {
 }
 ```
 
-/ @EnableJpaAuditing 
-`@CreationTimestamp` 와 `@UpdateTimestamp` 말고 다르게 써도 된다.
-대신 `@CreatedDate` 와 `@LastModifiedDate`를 써도 된다.
 
-
+#### `@CreatedDate` 와 `@LastModifiedDate`
 ```
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -145,8 +152,12 @@ public abstract class BaseEntity {
 
 }
 ```
-
+`@CreationTimestamp` 와 `@UpdateTimestamp` 말고 다르게 써도 된다.
+대신 `@CreatedDate` 와 `@LastModifiedDate`를 써도 된다.
 단, `@CreatedDate` 와 `@LastModifiedDate`를 쓰려면 스프링 부트 클래스에 `@EnableJpaAuditing`을 붙여줘야 한다.
+
+
+#### `@EnableJpaAuditing`
 ```
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -160,6 +171,9 @@ public class Application {
     }
 }
 ```
+
+
+#### 차이점
 붙여줘야 하는 애노테이션이 늘었고 뭘 더 설정해줘야 하고 복잡해 보인다.
 그럼에도 `@CreatedDate`/`@LastModifiedDate`를 쓰려고 한다면 이유가 뭘까?
 `@CreationTimestamp`/`@UpdateTimestamp` 와 그럼에도 `@CreatedDate`/`@LastModifiedDate` 사이의 차이점이 뭔가?
@@ -187,8 +201,7 @@ SpringDataJpa를 사용하면 또 다른 장점도 있다.
 또는 JPA의 엔티티 이벤트(AuditingEntityListener)를 활용해 특정 변경 이벤트를 가로채거나, 커스텀 로깅을 구현하는 기초로 활용할 수 있다.
 
 
-
-// 논리 삭제와 물리 삭제
+## 논리 삭제와 물리 삭제
 물리 삭제는 테이블로부터 데이터 자체를 삭제하는 방법이다.
 delete 쿼리를 날리는 방법이겠지.
 그럼 삭제하지 않는 방법도 있나?
@@ -197,20 +210,25 @@ delete 쿼리를 날리는 방법이겠지.
 에를 들어 "is_deleted" 라는 칼럼을 따로 만들어 둔다.
 여기에 "Y"/"N" 값을 넣어서 삭제됐다고 칠 수도 있다.
 이때는 update 쿼리를 날리겠지.
-
 두 방법은 각각 장단점이 있다.
 
-/ 논리 삭제를 썼을 때 장점
+
+#### 논리 삭제를 썼을 때 장점
 삭제된 데이터 복구 가능 (휴지통 기능)
 삭제 이력 보존 가능 (로깅, 감사)
 외래키(참조 무결성) 문제 회피 (부모 데이터 삭제로 인한 FK 에러 방지)
 
-/ 물리 삭제를 썼을 때 장점
+
+#### 물리 삭제를 썼을 때 장점
 다른 모든 쿼리에 `WHERE deleted = "N"` 같은 조건절을 붙이지 않아도 됨
 쿼리 복잡가 줄어듦
 데이터가 실제로는 DB에서 사라지기 때문에 저장소 관리가 필요 없음
 
-/ soft delete 와 hard delete
+
+#### soft delete 와 hard delete
 논리 삭제와 물리 삭제를 영어로 말할 땐 다음과 같다.
 물리 삭제 => hard delete
 논리 삭제 => soft delete
+
+
+-- 250705
