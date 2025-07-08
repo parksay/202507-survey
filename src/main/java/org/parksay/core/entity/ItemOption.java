@@ -2,8 +2,8 @@ package org.parksay.core.entity;
 
 import jakarta.persistence.*;
 
-@Entity
-public class ItemOptionEntity extends BaseEntity{
+@Entity(name="item_option")
+public class ItemOption extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="seq_item_option")
@@ -14,6 +14,6 @@ public class ItemOptionEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name="seq_survey_item")
-    private SurveyItemEntity surveyItem;
+    private SurveyItem surveyItem;
 
 }

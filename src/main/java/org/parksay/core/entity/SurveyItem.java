@@ -1,11 +1,14 @@
 package org.parksay.core.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SurveyItemEntity extends BaseEntity {
+@Entity(name = "survey_item")
+@Data
+public class SurveyItem extends BaseEntity {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         @Column(name = "seq_item")
@@ -13,16 +16,20 @@ public class SurveyItemEntity extends BaseEntity {
 
         @ManyToOne
         @JoinColumn(name = "seq_survey", nullable = false)
-        private SurveyRootEntity surveyRoot;
+        private SurveyRoot surveyRoot;
 
-        private String title;
+        @Column(nullable = false)
         private String desc;
 
         @Column(length=1)
-        private String isRequired;
+        private ValueYN isRequired = ValueYN.N;
 
-        private SurveyItemType type; 
+        @Column(nullable = false)
+        private SurveyItemType type;
 
         @OneToMany(mappedBy = "surveyItem", cascade = CascadeType.ALL)
-        private List<ItemOptionEntity> itemOptionList = new ArrayList<>();
+        private List<ItemOption> itemOptionList = new ArrayList<>();
+
+        // TODO - 연관관계 편의 메소드 넣기
 }
+

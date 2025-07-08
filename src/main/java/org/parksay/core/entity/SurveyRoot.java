@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-public class SurveyRootEntity extends BaseEntity {
+@Entity(name = "survey_root")
+public class SurveyRoot extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,5 +17,5 @@ public class SurveyRootEntity extends BaseEntity {
     private String desc;
 
     @OneToMany(mappedBy = "surveyRoot", cascade = CascadeType.ALL)
-    private List<SurveyItemEntity> surveyItemList = new ArrayList<>();
+    private List<SurveyItem> surveyItemList = new ArrayList<>();
 }

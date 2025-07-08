@@ -1,4 +1,7 @@
 package org.parksay.infra.repository;
 
-public class SurveyRootRepository {
+import org.parksay.core.entity.SurveyRoot;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SurveyRootRepository extends JpaRepository<SurveyRoot, Long> {
 }
