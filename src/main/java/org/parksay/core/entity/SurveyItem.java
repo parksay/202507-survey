@@ -2,12 +2,14 @@ package org.parksay.core.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "survey_item")
 @Data
+@EqualsAndHashCode(callSuper=false)
+@Entity(name = "survey_item")
 public class SurveyItem extends BaseEntity {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,9 +24,11 @@ public class SurveyItem extends BaseEntity {
         private String desc;
 
         @Column(length=1)
+        @Enumerated(EnumType.STRING)
         private ValueYN isRequired = ValueYN.N;
 
         @Column(nullable = false)
+        @Enumerated(EnumType.STRING)
         private SurveyItemType type;
 
         @OneToMany(mappedBy = "surveyItem", cascade = CascadeType.ALL)

@@ -12,8 +12,11 @@ public class AnswerItemBase extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="seq_survey_item")
-    @Column(nullable = false)
+    @JoinColumn(name = "seq_answer_root", nullable = false)
+    private AnswerRoot answerRoot;
+
+    @ManyToOne
+    @JoinColumn(name="seq_survey_item", nullable = false)
     private SurveyItem surveyItem;
 
     // 상속 관계로 설계하기 전의 문제점

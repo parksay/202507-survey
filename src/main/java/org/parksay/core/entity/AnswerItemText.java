@@ -3,8 +3,12 @@ package org.parksay.core.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Entity(name="answer_item")
+@Data
+@EqualsAndHashCode(callSuper=false)
+@Entity
 @DiscriminatorValue("TEXT")
 public class AnswerItemText extends AnswerItemBase {
 
