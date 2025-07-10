@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest(classes = Main.class)
 public class SurveyRootTest {
@@ -27,26 +28,28 @@ public class SurveyRootTest {
         System.out.println("hello world!");
     }
 
+
     @Test
     public void registSurveyRootTest() {
         //
         SurveyRoot surveyRoot = new SurveyRoot();
-        surveyRoot.setSurveyItemList(createTestSurveyItemList());
+        createTestSurveyItemList(surveyRoot);
         //
         surveyRootService.save(surveyRoot);
+        SurveyItem surveyItemOpt = surveyRoot.getSurveyItemList().stream()
+                .filter(item -> item.getType() == SurveyItemType.SINGLE_CHOICE)
+                .findFirst().get();
         //
         Assertions.assertNotNull(surveyRoot.getId());
         Assertions.assertNotNull(surveyRoot.getSurveyItemList().get(0).getId());
-        Assertions.assertNotNull(surveyRoot.getSurveyItemList().get(3).getItemOptionList().get(1).getId());
+        Assertions.assertNotNull(surveyItemOpt.getItemOptionList().get(1).getId());
     }
 
-    private List<SurveyItem> createTestSurveyItemList() {
-        List<SurveyItem> testSurveyItemList = new ArrayList<>();
-        testSurveyItemList.add(createTestShortItem());
-        testSurveyItemList.add(createTestLongItem());
-        testSurveyItemList.add(createTestSingleItem());
-        testSurveyItemList.add(createTestMultiItem());
-        return testSurveyItemList;
+    private void createTestSurveyItemList(SurveyRoot surveyRoot) {
+        surveyRoot.addSurveyItem(createTestShortItem());
+        surveyRoot.addSurveyItem(createTestLongItem());
+        surveyRoot.addSurveyItem(createTestSingleItem());
+        surveyRoot.addSurveyItem(createTestMultiItem());
     }
 
     private SurveyItem createTestShortItem() {
@@ -69,8 +72,8 @@ public class SurveyRootTest {
         SurveyItem testSingleItem = new SurveyItem();
         testSingleItem.setDesc("test_short");
         testSingleItem.setType(SurveyItemType.SINGLE_CHOICE);
-        testSingleItem.getItemOptionList().add(createTestItemOption("single_opt1"));
-        testSingleItem.getItemOptionList().add(createTestItemOption("single_opt2"));
+        testSingleItem.addItemOption(createTestItemOption("single_opt1"));
+        testSingleItem.addItemOption(createTestItemOption("single_opt2"));
         return testSingleItem;
     }
 
@@ -79,9 +82,9 @@ public class SurveyRootTest {
         SurveyItem testMultiItem = new SurveyItem();
         testMultiItem.setDesc("test_short");
         testMultiItem.setType(SurveyItemType.MULTIPLE_CHOICE);
-        testMultiItem.getItemOptionList().add(createTestItemOption("multi_opt1"));
-        testMultiItem.getItemOptionList().add(createTestItemOption("multi_opt2"));
-        testMultiItem.getItemOptionList().add(createTestItemOption("multi_opt3"));
+        testMultiItem.addItemOption(createTestItemOption("multi_opt1"));
+        testMultiItem.addItemOption(createTestItemOption("multi_opt2"));
+        testMultiItem.addItemOption(createTestItemOption("multi_opt3"));
         return testMultiItem;
     }
 
