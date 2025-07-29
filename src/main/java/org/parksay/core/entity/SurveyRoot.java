@@ -21,6 +21,12 @@ public class SurveyRoot extends BaseEntity {
 
     private String title;
     private String desc;
+    private int ver = 1;
+
+    @Setter(AccessLevel.NONE)
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "seq_survey_group")
+    private SurveyGroup surveyGroup;
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "surveyRoot", cascade = CascadeType.ALL)
@@ -37,6 +43,16 @@ public class SurveyRoot extends BaseEntity {
         if(surveyItem.getSurveyRoot() != null) {
             surveyItem.getSurveyRoot().getSurveyItemList().remove(surveyItem);
         }
-        surveyItem.setSurveyRoot(this);
+        surveyItem.changeSurveyRoot(this);
+    }
+
+    public void changeSurveyGroup(SurveyGroup surveyGroup) {
+        List<SurveyRoot> surveyRootList = surveyGroup.getSurveyRootList();
+        if(!surveyRootList.contains(this)) {
+            surveyRootList.add(this);
+        }
+        if(this.surveyGroup != surveyGroup) {
+            this.surveyGroup = surveyGroup;
+        }
     }
 }

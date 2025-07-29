@@ -5,19 +5,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.parksay.Main;
 import org.parksay.core.entity.*;
+import org.parksay.core.service.SurveyGroupService;
 import org.parksay.core.service.SurveyRootService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 @SpringBootTest(classes = Main.class)
+@Transactional
 public class SurveyRootTest {
 
     @Autowired
     SurveyRootService surveyRootService;
-
+    @Autowired
+    SurveyGroupService surveyGroupService;
 
     @Test
     public void contextLoads() {
@@ -30,8 +34,10 @@ public class SurveyRootTest {
         //
         SurveyRoot surveyRoot = new SurveyRoot();
         SurveyTestFactory.putItemsSurveyRoot(surveyRoot);
+        SurveyGroup surveyGroup = new SurveyGroup();
+        surveyGroup.addSurveyRoot(surveyRoot);
         //
-        surveyRootService.save(surveyRoot);
+        surveyGroupService.save(surveyGroup);
         SurveyItem surveyItemOpt = SurveyTestFactory.findItemByType(surveyRoot, SurveyItemType.MULTIPLE_CHOICE);
         //
         Assertions.assertNotNull(surveyRoot.getId());
@@ -52,13 +58,15 @@ public class SurveyRootTest {
         String opt3 = "multi_opt3";
         ValueYN isRequiredItemText = ValueYN.Y;
         ValueYN isRequiredItemOpt = ValueYN.N;
-        //
         SurveyRoot surveyRoot = new SurveyRoot();
         surveyRoot.setDesc(testDesc);
         surveyRoot.setTitle(testTitle);
         surveyRoot.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.LONG_TEXT, testDescText, isRequiredItemText));
         surveyRoot.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, testDescOpt, isRequiredItemOpt, List.of(opt1, opt2, opt3)));
-        surveyRootService.save(surveyRoot);
+        SurveyGroup surveyGroup = new SurveyGroup();
+        surveyGroup.addSurveyRoot(surveyRoot);
+        surveyGroupService.save(surveyGroup);
+        //
         Long id = surveyRoot.getId();
         SurveyRoot saved = surveyRootService.findById(id);
         //
@@ -67,6 +75,7 @@ public class SurveyRootTest {
         SurveyItem surveyItemText = SurveyTestFactory.findItemByType(saved, SurveyItemType.LONG_TEXT);
         Assertions.assertNotNull(surveyItemOpt);
         Assertions.assertNotNull(surveyItemText);
+        Assertions.assertNotNull(surveyRoot.getSurveyGroup().getId());
         Assertions.assertEquals(testDesc, saved.getDesc());
         Assertions.assertEquals(testTitle, saved.getTitle());
         Assertions.assertEquals(testDescText, surveyItemText.getDesc());

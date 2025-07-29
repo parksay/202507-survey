@@ -42,7 +42,7 @@ public class SurveyItem extends BaseEntity {
         //  하지만 그만큼의 가치가 있으려나
 
 
-        public void setSurveyRoot(SurveyRoot surveyRoot) {
+        public void changeSurveyRoot(SurveyRoot surveyRoot) {
                 List<SurveyItem> surveyItemList = surveyRoot.getSurveyItemList();
                 if(!surveyItemList.contains(this)) {
                         surveyItemList.add(this);
