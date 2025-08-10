@@ -2,7 +2,6 @@ package survey;
 
 import org.parksay.core.entity.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SurveyTestFactory {

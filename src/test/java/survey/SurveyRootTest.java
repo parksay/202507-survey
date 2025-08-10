@@ -171,6 +171,6 @@ public class SurveyRootTest {
 
 
 
-    // TODO - 설문조사 수정 / 응답 등록 / 응답 조회 테스트 코드 만들기
+    // TODO - 응답 등록 / 응답 조회 테스트 코드 만들기
 
 }

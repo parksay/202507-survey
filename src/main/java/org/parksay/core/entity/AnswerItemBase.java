@@ -1,8 +1,10 @@
 package org.parksay.core.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -19,13 +21,14 @@ public class AnswerItemBase extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "seq_answer_root", nullable = false)
+    @Setter(AccessLevel.NONE)
     private AnswerRoot answerRoot;
 
     @ManyToOne
     @JoinColumn(name="seq_survey_item", nullable = false)
     private SurveyItem surveyItem;
 
-    public void setAnswerRoot(AnswerRoot answerRoot) {
+    public void changeAnswerRoot(AnswerRoot answerRoot) {
         List<AnswerItemBase> answerItemList = answerRoot.getAnswerItemList();
         if(!answerItemList.contains(this)) {
             answerItemList.add(this);

@@ -18,4 +18,9 @@ public abstract class BaseEntity {
 
     @UpdateTimestamp
     private LocalDateTime updatedTime;
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

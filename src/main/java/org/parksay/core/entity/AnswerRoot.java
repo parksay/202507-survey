@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,10 +25,10 @@ public class AnswerRoot extends BaseEntity {
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "answerRoot", cascade = CascadeType.ALL)
-    List<AnswerItemBase> answerItemList;
+    List<AnswerItemBase> answerItemList = new ArrayList<>();
 
 
-    public void addSurveyItem(AnswerItemBase answerItem) {
+    public void addAnswerItem(AnswerItemBase answerItem) {
         if(!this.answerItemList.contains(answerItem)) {
             this.answerItemList.add(answerItem);
         }
@@ -37,6 +38,6 @@ public class AnswerRoot extends BaseEntity {
         if(answerItem.getAnswerRoot() != null) {
             answerItem.getAnswerRoot().getAnswerItemList().remove(answerItem);
         }
-        answerItem.setAnswerRoot(this);
+        answerItem.changeAnswerRoot(this);
     }
 }

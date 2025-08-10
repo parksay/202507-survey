@@ -2,8 +2,10 @@ package org.parksay.core.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public class SurveyGroup extends BaseEntity {
     private Long id;
 
     @OneToMany(mappedBy = "surveyGroup", cascade = CascadeType.ALL)
+    @Setter(AccessLevel.NONE)
     List<SurveyRoot> surveyRootList = new ArrayList<>();
 
     public void addSurveyRoot(SurveyRoot surveyRoot) {
