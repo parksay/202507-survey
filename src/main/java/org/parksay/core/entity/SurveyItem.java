@@ -5,14 +5,17 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import org.hibernate.annotations.Immutable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
 @Entity(name = "survey_item")
-public class SurveyItem extends BaseEntity {
+@Immutable
+public class SurveyItem extends BaseEntity implements VersionCloneable {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         @Column(name = "seq_item")
@@ -20,10 +23,14 @@ public class SurveyItem extends BaseEntity {
 
         @ManyToOne
         @JoinColumn(name = "seq_survey", nullable = false)
+        @Setter(AccessLevel.NONE)
         private SurveyRoot surveyRoot;
 
         @Column(nullable = false)
         private String desc;
+
+        @Setter(AccessLevel.PRIVATE)
+        private int ver = 1;
 
         @Column(length=1)
         @Enumerated(EnumType.STRING)
@@ -69,7 +76,22 @@ public class SurveyItem extends BaseEntity {
                 if(itemOption.getSurveyItem() != null) {
                         itemOption.getSurveyItem().getItemOptionList().remove(itemOption);
                 }
-                itemOption.setSurveyItem(this);
+                itemOption.changeSurveyItem(this);
+        }
+
+        @Override
+        public BaseEntity cloneWithNewVersion(int newVersion) {
+                SurveyItem newSurveyItem = new SurveyItem();
+                newSurveyItem.setType(this.type);
+                newSurveyItem.setIsRequired(this.isRequired);
+                newSurveyItem.setDesc(this.desc);
+                newSurveyItem.setVer(newVersion);
+                Iterator<ItemOption> iterator = this.itemOptionList.iterator();
+                while (iterator.hasNext()) {
+                        ItemOption item = iterator.next();
+                        newSurveyItem.addItemOption((ItemOption)item.cloneWithNewVersion(newVersion));
+                }
+                return newSurveyItem;
         }
 }
 

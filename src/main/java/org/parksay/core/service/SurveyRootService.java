@@ -21,4 +21,12 @@ public class SurveyRootService {
         return surveyRootRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
+    public SurveyRoot modifySurveyRoot(SurveyRoot surveyRootOld) {
+        SurveyRoot surveyRootNew = (SurveyRoot)surveyRootOld.cloneWithNewVersion(surveyRootOld.getVer()+1);
+        return surveyRootRepository.save(surveyRootNew);
+    }
+
+    public SurveyRoot findLatestSurveyRootBySurveyGroupId(Long surveyGroupid) {
+        return surveyRootRepository.findTopBySurveyGroupIdOrderByVerDesc(surveyGroupid).orElseThrow(EntityNotFoundException::new);
+    }
 }

@@ -5,14 +5,17 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import org.hibernate.annotations.Immutable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
 @Entity(name = "survey_root")
-public class SurveyRoot extends BaseEntity {
+@Immutable
+public class SurveyRoot extends BaseEntity implements VersionCloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,6 +24,8 @@ public class SurveyRoot extends BaseEntity {
 
     private String title;
     private String desc;
+
+    @Setter(AccessLevel.PRIVATE)
     private int ver = 1;
 
     @Setter(AccessLevel.NONE)
@@ -54,5 +59,20 @@ public class SurveyRoot extends BaseEntity {
         if(this.surveyGroup != surveyGroup) {
             this.surveyGroup = surveyGroup;
         }
+    }
+
+    @Override
+    public BaseEntity cloneWithNewVersion(int newVersion) {
+        SurveyRoot newSurveyRoot = new SurveyRoot();
+        newSurveyRoot.setTitle(this.title);
+        newSurveyRoot.setDesc(this.desc);
+        newSurveyRoot.setVer(newVersion);
+        newSurveyRoot.changeSurveyGroup(this.surveyGroup);
+        Iterator<SurveyItem> iterator = this.surveyItemList.iterator();
+        while (iterator.hasNext()) {
+            SurveyItem item = iterator.next();
+            newSurveyRoot.addSurveyItem((SurveyItem)item.cloneWithNewVersion(newVersion));
+        }
+        return newSurveyRoot;
     }
 }

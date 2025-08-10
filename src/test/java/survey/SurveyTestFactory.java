@@ -18,6 +18,14 @@ public class SurveyTestFactory {
     public static String strOptMulti2 = "opt_multi2";
     public static String strOptMulti3 = "opt_multi3";
 
+
+    public static SurveyRoot createSurveyRoot(String title, String desc) {
+        SurveyRoot surveyRoot = new SurveyRoot();
+        surveyRoot.setTitle(title);
+        surveyRoot.setDesc(desc);
+        return surveyRoot;
+    }
+
     public static void putItemsSurveyRoot(SurveyRoot surveyRoot) {
         surveyRoot.addSurveyItem(createTextItem(SurveyItemType.SHORT_TEXT, strDescShort, ValueYN.Y));
         surveyRoot.addSurveyItem(createTextItem(SurveyItemType.LONG_TEXT, strDescLong, ValueYN.N));
