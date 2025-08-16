@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Data
 @EqualsAndHashCode(callSuper=false)
 @Entity(name = "survey_group")
@@ -34,5 +35,10 @@ public class SurveyGroup extends BaseEntity {
             surveyRoot.getSurveyGroup().getSurveyRootList().remove(surveyRoot);
         }
         surveyRoot.changeSurveyGroup(this);
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 }

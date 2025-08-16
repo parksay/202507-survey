@@ -21,6 +21,7 @@ public class AnswerRoot extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name="seq_survey_root", nullable = false)
+    @Setter(AccessLevel.NONE)
     SurveyRoot surveyRoot;
 
     @Setter(AccessLevel.NONE)
@@ -39,5 +40,14 @@ public class AnswerRoot extends BaseEntity {
             answerItem.getAnswerRoot().getAnswerItemList().remove(answerItem);
         }
         answerItem.changeAnswerRoot(this);
+    }
+
+    public void changeSurveyRoot(SurveyRoot surveyRoot) {
+        this.surveyRoot = surveyRoot;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 }

@@ -12,7 +12,7 @@ public class AnswerTestFactory {
 
     public static AnswerRoot createAnswerRoot(SurveyRoot surveyRoot) {
         AnswerRoot answerRoot = new AnswerRoot();
-        answerRoot.setSurveyRoot(surveyRoot);
+        answerRoot.changeSurveyRoot(surveyRoot);
         return answerRoot;
     }
 

@@ -16,4 +16,10 @@ public class AnswerItemText extends AnswerItemBase {
     // 답변 항목이 필수 답변이 아닐 수 있으므로 nullable
     @Column(nullable = true)
     private String txtVal;
+
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

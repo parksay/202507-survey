@@ -38,6 +38,10 @@ public class AnswerItemBase extends BaseEntity {
         }
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 
     // 상속 관계로 설계하기 전의 문제점
     // answer type check 가 제대로 되지 않음

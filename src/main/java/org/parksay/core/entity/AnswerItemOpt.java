@@ -14,4 +14,9 @@ public class AnswerItemOpt extends AnswerItemBase {
     @JoinColumn(name = "seq_item_option", nullable = true)
     private ItemOption itemOption;
 
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

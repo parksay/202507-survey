@@ -66,5 +66,11 @@ public class SurveyTestFactory {
                 .orElseThrow();
     }
 
+    public static AnswerItemBase findAnswerItemByType(AnswerRoot answerRoot, SurveyItemType type) {
+        return answerRoot.getAnswerItemList().stream()
+                .filter(item -> item.getSurveyItem().getType() == type)
+                .findFirst()
+                .orElseThrow();
+    }
 }
 

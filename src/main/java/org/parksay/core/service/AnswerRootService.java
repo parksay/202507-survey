@@ -6,6 +6,8 @@ import org.parksay.infra.repository.AnswerRootRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AnswerRootService {
     @Autowired
@@ -20,5 +22,7 @@ public class AnswerRootService {
         return answerRootRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-
+    public List<AnswerRoot> findBySurveyRootId(Long surveyRootId) {
+        return answerRootRepository.findAllBySurveyRootId(surveyRootId);
+    }
 }

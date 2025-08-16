@@ -79,7 +79,43 @@ public class AnswerRootTest {
         AnswerItemText savedAnswerItemText = (AnswerItemText) AnswerTestFactory.findItemByType(savedAnswerRoot, SurveyItemType.SHORT_TEXT);
         Assertions.assertEquals(testAnswerTxt, savedAnswerItemText.getTxtVal());
         AnswerItemOpt savedAnswerItemOpt = (AnswerItemOpt) AnswerTestFactory.findItemByType(savedAnswerRoot, SurveyItemType.MULTIPLE_CHOICE);
-        Assertions.assertEquals(testAnswerOptId, savedAnswerItemOpt.getId());
+        Assertions.assertEquals(testAnswerOptId, savedAnswerItemOpt.getItemOption().getId());
     }
 
+
+    @Test
+    public void readAnswerRootTest() {
+        //
+        SurveyRoot surveyRoot = SurveyTestFactory.createSurveyRoot("title_ReadAnswerRootTest", "dsc_ReadAnswerRootTest");
+        SurveyTestFactory.putItemsSurveyRoot(surveyRoot);
+        SurveyGroup surveyGroup = new SurveyGroup();
+        surveyRoot.changeSurveyGroup(surveyGroup);
+        surveyGroupService.save(surveyGroup);
+        AnswerRoot answerRoot = AnswerTestFactory.createAnswerRoot(surveyRoot);
+        String textShort = "read answer test short";
+        String textLong = "read answer test long";
+        ItemOption optSingle = surveyRoot.getSurveyItemList().get(2).getItemOptionList().get(0);
+        ItemOption optMulti = surveyRoot.getSurveyItemList().get(3).getItemOptionList().get(0);
+        AnswerTestFactory.createAnswerItemText(answerRoot, SurveyTestFactory.findItemByType(surveyRoot, SurveyItemType.SHORT_TEXT), textShort);
+        AnswerTestFactory.createAnswerItemText(answerRoot, SurveyTestFactory.findItemByType(surveyRoot, SurveyItemType.LONG_TEXT), textLong);
+        AnswerTestFactory.createAnswerItemOpt(answerRoot, SurveyTestFactory.findItemByType(surveyRoot, SurveyItemType.SINGLE_CHOICE), optSingle);
+        AnswerTestFactory.createAnswerItemOpt(answerRoot, SurveyTestFactory.findItemByType(surveyRoot, SurveyItemType.MULTIPLE_CHOICE), optMulti);
+        answerRootService.save(answerRoot);
+
+        //
+        entityManager.flush();
+        entityManager.clear();
+        List<AnswerRoot> answerRootList = answerRootService.findBySurveyRootId(surveyRoot.getId());
+
+        //
+        Assertions.assertTrue(answerRootList.size() == 1);
+        Assertions.assertEquals(answerRootList.get(0).getId(), answerRoot.getId());
+        Assertions.assertEquals(answerRootList.get(0).getSurveyRoot().getId(), surveyRoot.getId());
+        Assertions.assertEquals(((AnswerItemText)(AnswerTestFactory.findItemByType(answerRootList.get(0), SurveyItemType.SHORT_TEXT))).getTxtVal(), textShort);
+        Assertions.assertEquals(((AnswerItemText)(AnswerTestFactory.findItemByType(answerRootList.get(0), SurveyItemType.LONG_TEXT))).getTxtVal(), textLong);
+        Assertions.assertEquals(((AnswerItemOpt)(AnswerTestFactory.findItemByType(answerRootList.get(0), SurveyItemType.SINGLE_CHOICE))).getItemOption().getId(), optSingle.getId());
+        Assertions.assertEquals(((AnswerItemOpt)(AnswerTestFactory.findItemByType(answerRootList.get(0), SurveyItemType.MULTIPLE_CHOICE))).getItemOption().getId(), optMulti.getId());
+
+
+    }
 }

@@ -1,16 +1,14 @@
 package org.parksay.core.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Immutable;
 
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Entity(name="item_option")
 @Immutable
 public class ItemOption extends BaseEntity implements VersionCloneable {

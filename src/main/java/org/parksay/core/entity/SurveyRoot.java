@@ -75,4 +75,9 @@ public class SurveyRoot extends BaseEntity implements VersionCloneable {
         }
         return newSurveyRoot;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

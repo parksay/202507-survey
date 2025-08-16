@@ -93,5 +93,11 @@ public class SurveyItem extends BaseEntity implements VersionCloneable {
                 }
                 return newSurveyItem;
         }
+
+
+        @Override
+        public String toString() {
+                return this.getClass().getSimpleName();
+        }
 }
 
