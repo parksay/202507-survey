@@ -6,10 +6,15 @@ import java.util.List;
 
 public class SurveyTestFactory {
 
-    public static String strDescShort = "test_short";
-    public static String strDescLong = "test_long";
-    public static String strDescSingle = "test_single";
-    public static String strDescMulti = "test_multi";
+
+    public static String strTitleShort = "test_title_short";
+    public static String strTitleLong = "test_title_long";
+    public static String strTitleSingle = "test_title_single";
+    public static String strTitleMulti = "test_title_multi";
+    public static String strDescShort = "test_desc_short";
+    public static String strDescLong = "test_desc_long";
+    public static String strDescSingle = "test_desc_single";
+    public static String strDescMulti = "test_desc_multi";
     public static String strOptSingle1 = "opt_single1";
     public static String strOptSingle2 = "opt_single2";
     public static String strOptSingle3 = "opt_single3";
@@ -26,27 +31,28 @@ public class SurveyTestFactory {
     }
 
     public static void putItemsSurveyRoot(SurveyRoot surveyRoot) {
-        surveyRoot.addSurveyItem(createTextItem(SurveyItemType.SHORT_TEXT, strDescShort, ValueYN.Y));
-        surveyRoot.addSurveyItem(createTextItem(SurveyItemType.LONG_TEXT, strDescLong, ValueYN.N));
-        surveyRoot.addSurveyItem(createOptItem(SurveyItemType.SINGLE_CHOICE, strDescSingle, ValueYN.Y, List.of(strOptSingle1, strOptSingle2, strOptSingle3)));
-        surveyRoot.addSurveyItem(createOptItem(SurveyItemType.MULTIPLE_CHOICE, strDescMulti, ValueYN.N, List.of(strOptMulti1, strOptMulti2, strOptMulti3)));
+        surveyRoot.addSurveyItem(createTextItem(SurveyItemType.SHORT_TEXT, strTitleShort, strDescShort, ValueYN.Y));
+        surveyRoot.addSurveyItem(createTextItem(SurveyItemType.LONG_TEXT, strTitleLong, strDescLong, ValueYN.N));
+        surveyRoot.addSurveyItem(createOptItem(SurveyItemType.SINGLE_CHOICE, strTitleSingle, strDescSingle, ValueYN.Y, List.of(strOptSingle1, strOptSingle2, strOptSingle3)));
+        surveyRoot.addSurveyItem(createOptItem(SurveyItemType.MULTIPLE_CHOICE, strTitleMulti, strDescMulti, ValueYN.N, List.of(strOptMulti1, strOptMulti2, strOptMulti3)));
     }
 
-    public static SurveyItem createTextItem(SurveyItemType type, String desc, ValueYN isRequired) {
-        return createItem(type, desc, isRequired);
+    public static SurveyItem createTextItem(SurveyItemType type, String title, String desc, ValueYN isRequired) {
+        return createItem(type, title, desc, isRequired);
     }
 
-    public static SurveyItem createOptItem(SurveyItemType type, String desc, ValueYN isRequired, List<String> optDescStrList) {
-        SurveyItem item = createItem(type, desc, isRequired);
+    public static SurveyItem createOptItem(SurveyItemType type, String title, String desc, ValueYN isRequired, List<String> optDescStrList) {
+        SurveyItem item = createItem(type, title, desc, isRequired);
         optDescStrList.forEach((ele)->{
             item.addItemOption(createItemOption(ele));
         });
         return item;
     }
 
-    public static SurveyItem createItem(SurveyItemType type, String desc, ValueYN isRequired) {
+    public static SurveyItem createItem(SurveyItemType type, String title, String desc, ValueYN isRequired) {
         SurveyItem item = new SurveyItem();
         item.setType(type);
+        item.setTitle(title);
         item.setDesc(desc);
         item.setIsRequired(isRequired);
         item.setType(type);

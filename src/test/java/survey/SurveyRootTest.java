@@ -55,6 +55,8 @@ public class SurveyRootTest {
         //
         String testDesc = "hello world! desc";
         String testTitle = "hello world! title";
+        String testTitleText = "hello world? text";
+        String testTitleOpt = "hello world? opt";
         String testDescText = "hello world! text";
         String testDescOpt = "hello world! opt";
         String opt1 = "multi_opt1";
@@ -63,8 +65,8 @@ public class SurveyRootTest {
         ValueYN isRequiredItemText = ValueYN.Y;
         ValueYN isRequiredItemOpt = ValueYN.N;
         SurveyRoot surveyRoot = SurveyTestFactory.createSurveyRoot(testTitle, testDesc);
-        surveyRoot.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.LONG_TEXT, testDescText, isRequiredItemText));
-        surveyRoot.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, testDescOpt, isRequiredItemOpt, List.of(opt1, opt2, opt3)));
+        surveyRoot.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.LONG_TEXT, testTitleText, testDescText, isRequiredItemText));
+        surveyRoot.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, testTitleOpt, testDescOpt, isRequiredItemOpt, List.of(opt1, opt2, opt3)));
         SurveyGroup surveyGroup = new SurveyGroup();
         surveyGroup.addSurveyRoot(surveyRoot);
         surveyGroupService.save(surveyGroup);
@@ -82,8 +84,10 @@ public class SurveyRootTest {
         Assertions.assertNotNull(surveyRoot.getSurveyGroup().getId());
         Assertions.assertEquals(testDesc, saved.getDesc());
         Assertions.assertEquals(testTitle, saved.getTitle());
+        Assertions.assertEquals(testTitleText, surveyItemText.getTitle());
         Assertions.assertEquals(testDescText, surveyItemText.getDesc());
         Assertions.assertEquals(isRequiredItemText, surveyItemText.getIsRequired());
+        Assertions.assertEquals(testTitleOpt, surveyItemOpt.getTitle());
         Assertions.assertEquals(testDescOpt, surveyItemOpt.getDesc());
         Assertions.assertEquals(isRequiredItemOpt, surveyItemOpt.getIsRequired());
         Assertions.assertEquals(opt1, surveyItemOpt.getItemOptionList().get(0).getDesc());
@@ -95,6 +99,8 @@ public class SurveyRootTest {
         //
         String testDesc = "hello world! desc";
         String testTitle = "hello world! title";
+        String testTitleText = "hello world! title text";
+        String testTitleOpt = "hello world! title opt";
         String testDescText = "hello world! text";
         String testDescOpt = "hello world! opt";
         String opt1 = "multi_opt1";
@@ -103,8 +109,8 @@ public class SurveyRootTest {
         ValueYN isRequiredItemText = ValueYN.Y;
         ValueYN isRequiredItemOpt = ValueYN.N;
         SurveyRoot surveyRootOld = SurveyTestFactory.createSurveyRoot(testTitle, testDesc);
-        surveyRootOld.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.LONG_TEXT, testDescText, isRequiredItemText));
-        surveyRootOld.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, testDescOpt, isRequiredItemOpt, List.of(opt1, opt2, opt3)));
+        surveyRootOld.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.LONG_TEXT, testTitleText, testDescText, isRequiredItemText));
+        surveyRootOld.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, testTitleOpt, testDescOpt, isRequiredItemOpt, List.of(opt1, opt2, opt3)));
         SurveyGroup surveyGroup = new SurveyGroup();
         surveyGroup.addSurveyRoot(surveyRootOld);
         surveyGroupService.save(surveyGroup);
@@ -114,6 +120,8 @@ public class SurveyRootTest {
         entityManager.clear();
         String testDesc2 = "modified desc";
         String testTitle2 = "modified title";
+        String testTitleText2 = "modified title text";
+        String testTitleOpt2 = "modified title opt";
         String testDescText2 = "modified text";
         String testDescOpt2 = "modified opt";
         String opt12 = "modified multi_opt1";
@@ -125,8 +133,10 @@ public class SurveyRootTest {
         surveyRootOld.setTitle(testTitle2);
         SurveyItem itemTextBefore = SurveyTestFactory.findItemByType(surveyRootOld, SurveyItemType.LONG_TEXT);
         SurveyItem itemOptBefore = SurveyTestFactory.findItemByType(surveyRootOld, SurveyItemType.MULTIPLE_CHOICE);
+        itemTextBefore.setTitle(testTitleText2);
         itemTextBefore.setDesc(testDescText2);
         itemTextBefore.setIsRequired(isRequiredItemText2);
+        itemOptBefore.setTitle(testTitleOpt2);
         itemOptBefore.setDesc(testDescOpt2);
         itemOptBefore.setIsRequired(isRequiredItemOpt2);
         itemOptBefore.getItemOptionList().get(0).setDesc(opt12);
@@ -151,26 +161,14 @@ public class SurveyRootTest {
         Assertions.assertNotNull(itemTextAfter);
         Assertions.assertEquals(testDesc2, surveyRootNew.getDesc());
         Assertions.assertEquals(testTitle2, surveyRootNew.getTitle());
+        Assertions.assertEquals(testTitleText2, itemTextAfter.getTitle());
         Assertions.assertEquals(testDescText2, itemTextAfter.getDesc());
+        Assertions.assertEquals(testTitleOpt2, itemOptAfter.getTitle());
         Assertions.assertEquals(testDescOpt2, itemOptAfter.getDesc());
         Assertions.assertEquals(isRequiredItemText2, itemTextAfter.getIsRequired());
         Assertions.assertEquals(isRequiredItemOpt2, itemOptAfter.getIsRequired());
         Assertions.assertEquals(opt12, itemOptAfter.getItemOptionList().get(0).getDesc());
         
-        // TODO - 아니 이거 아무리 봐도 이상함. 설계를 잘못한 듯.
-        // 지금 계층이 SurveyGroup > SurveyRoot > SurveyItem > SurveyOption 이렇게 있는데
-        // 이걸 다 수동으로 깊은 복사를 한다고?
-        // 그리고 이거 엔티티마다 각각 ver 를 들고 있어야 하는데 그게 맞아?
-        // 버전 관리는 어떻게 해야 할지 다시 고민해 보기
-        // 이러한 버전 관리 내용 정리해서 블로그에 쓰기
-        // json / 일일이 넣기 / 팩토리 메소드 분리 => 캡슐화 응집도
-        // @Immutable => insert 이후 update 는 안 됨 / hibernate 구현체 전용
-        // @Setter(AccessLevel.PRIVATE) 하면 같은 클래스만 접근 가능, 같은 클래스이면서 다른 인스턴스도 접근 가능, 다른 클래스에서는 접근 불가
     }
-
-
-
-
-    // TODO - 응답 등록 / 응답 조회 테스트 코드 만들기
 
 }

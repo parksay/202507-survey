@@ -52,8 +52,8 @@ public class AnswerRootTest {
     public void createAnswerRootTest() {
         //
         SurveyRoot testSurveyRoot2 = SurveyTestFactory.createSurveyRoot("answer test-2", "survey2");
-        testSurveyRoot2.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.SHORT_TEXT, SurveyTestFactory.strDescShort, ValueYN.N));
-        testSurveyRoot2.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, SurveyTestFactory.strDescMulti, ValueYN.N, List.of(SurveyTestFactory.strOptMulti1, SurveyTestFactory.strOptMulti2, SurveyTestFactory.strOptMulti3)));
+        testSurveyRoot2.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.SHORT_TEXT, SurveyTestFactory.strTitleShort, SurveyTestFactory.strDescShort, ValueYN.N));
+        testSurveyRoot2.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, SurveyTestFactory.strTitleMulti, SurveyTestFactory.strDescMulti, ValueYN.N, List.of(SurveyTestFactory.strOptMulti1, SurveyTestFactory.strOptMulti2, SurveyTestFactory.strOptMulti3)));
         SurveyGroup surveyGroup2 = new SurveyGroup();
         surveyGroup2.addSurveyRoot(testSurveyRoot2);
         surveyGroupService.save(surveyGroup2);

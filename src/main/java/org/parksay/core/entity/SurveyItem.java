@@ -26,6 +26,10 @@ public class SurveyItem extends BaseEntity implements VersionCloneable {
         @Setter(AccessLevel.NONE)
         private SurveyRoot surveyRoot;
 
+
+        @Column(nullable = false)
+        private String title;
+
         @Column(nullable = false)
         private String desc;
 
@@ -84,6 +88,7 @@ public class SurveyItem extends BaseEntity implements VersionCloneable {
                 SurveyItem newSurveyItem = new SurveyItem();
                 newSurveyItem.setType(this.type);
                 newSurveyItem.setIsRequired(this.isRequired);
+                newSurveyItem.setTitle(this.title);
                 newSurveyItem.setDesc(this.desc);
                 newSurveyItem.setVer(newVersion);
                 Iterator<ItemOption> iterator = this.itemOptionList.iterator();
