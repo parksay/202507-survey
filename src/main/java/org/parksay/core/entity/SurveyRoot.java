@@ -1,5 +1,7 @@
 package org.parksay.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -31,10 +33,12 @@ public class SurveyRoot extends BaseEntity implements VersionCloneable {
     @Setter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(nullable = false, name = "seq_survey_group")
+    @JsonBackReference
     private SurveyGroup surveyGroup;
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "surveyRoot", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<SurveyItem> surveyItemList = new ArrayList<>();
 
 
@@ -67,7 +71,6 @@ public class SurveyRoot extends BaseEntity implements VersionCloneable {
         newSurveyRoot.setTitle(this.title);
         newSurveyRoot.setDesc(this.desc);
         newSurveyRoot.setVer(newVersion);
-        newSurveyRoot.changeSurveyGroup(this.surveyGroup);
         Iterator<SurveyItem> iterator = this.surveyItemList.iterator();
         while (iterator.hasNext()) {
             SurveyItem item = iterator.next();

@@ -1,5 +1,7 @@
 package org.parksay.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -24,6 +26,7 @@ public class SurveyItem extends BaseEntity implements VersionCloneable {
         @ManyToOne
         @JoinColumn(name = "seq_survey", nullable = false)
         @Setter(AccessLevel.NONE)
+        @JsonBackReference
         private SurveyRoot surveyRoot;
 
 
@@ -46,6 +49,7 @@ public class SurveyItem extends BaseEntity implements VersionCloneable {
 
         @Setter(AccessLevel.NONE)
         @OneToMany(mappedBy = "surveyItem", cascade = CascadeType.ALL)
+        @JsonManagedReference
         private List<ItemOption> itemOptionList = new ArrayList<>();
 
         // TODO - ITEM entity 도 text 와 opt 로 분리하는 게 나을까?

@@ -1,5 +1,6 @@
 package org.parksay.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
@@ -26,6 +27,7 @@ public class ItemOption extends BaseEntity implements VersionCloneable {
     @ManyToOne
     @JoinColumn(name="seq_survey_item", nullable = false)
     @Setter(AccessLevel.NONE)
+    @JsonBackReference
     private SurveyItem surveyItem;
 
 

@@ -1,11 +1,9 @@
 package org.parksay.core.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +20,7 @@ public class SurveyGroup extends BaseEntity {
 
     @OneToMany(mappedBy = "surveyGroup", cascade = CascadeType.ALL)
     @Setter(AccessLevel.NONE)
+    @JsonManagedReference
     List<SurveyRoot> surveyRootList = new ArrayList<>();
 
     public void addSurveyRoot(SurveyRoot surveyRoot) {

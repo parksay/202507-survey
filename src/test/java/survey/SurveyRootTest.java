@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.parksay.Main;
 import org.parksay.core.entity.*;
-import org.parksay.core.service.SurveyGroupService;
 import org.parksay.core.service.SurveyRootService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,8 +21,6 @@ public class SurveyRootTest {
     @Autowired
     SurveyRootService surveyRootService;
     @Autowired
-    SurveyGroupService surveyGroupService;
-    @Autowired
     EntityManager entityManager;
 
 
@@ -38,10 +35,8 @@ public class SurveyRootTest {
         //
         SurveyRoot surveyRoot = new SurveyRoot();
         SurveyTestFactory.putItemsSurveyRoot(surveyRoot);
-        SurveyGroup surveyGroup = new SurveyGroup();
-        surveyGroup.addSurveyRoot(surveyRoot);
         //
-        surveyGroupService.save(surveyGroup);
+        surveyRootService.save(surveyRoot);
         SurveyItem surveyItemOpt = SurveyTestFactory.findItemByType(surveyRoot, SurveyItemType.MULTIPLE_CHOICE);
         //
         Assertions.assertNotNull(surveyRoot.getId());
@@ -67,9 +62,7 @@ public class SurveyRootTest {
         SurveyRoot surveyRoot = SurveyTestFactory.createSurveyRoot(testTitle, testDesc);
         surveyRoot.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.LONG_TEXT, testTitleText, testDescText, isRequiredItemText));
         surveyRoot.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, testTitleOpt, testDescOpt, isRequiredItemOpt, List.of(opt1, opt2, opt3)));
-        SurveyGroup surveyGroup = new SurveyGroup();
-        surveyGroup.addSurveyRoot(surveyRoot);
-        surveyGroupService.save(surveyGroup);
+        surveyRootService.save(surveyRoot);
         //
         entityManager.flush();
         entityManager.clear();
@@ -111,9 +104,7 @@ public class SurveyRootTest {
         SurveyRoot surveyRootOld = SurveyTestFactory.createSurveyRoot(testTitle, testDesc);
         surveyRootOld.addSurveyItem(SurveyTestFactory.createTextItem(SurveyItemType.LONG_TEXT, testTitleText, testDescText, isRequiredItemText));
         surveyRootOld.addSurveyItem(SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, testTitleOpt, testDescOpt, isRequiredItemOpt, List.of(opt1, opt2, opt3)));
-        SurveyGroup surveyGroup = new SurveyGroup();
-        surveyGroup.addSurveyRoot(surveyRootOld);
-        surveyGroupService.save(surveyGroup);
+        surveyRootService.save(surveyRootOld);
 
         //
         entityManager.flush();
@@ -129,20 +120,15 @@ public class SurveyRootTest {
         String opt33 = "modified multi_opt3";
         ValueYN isRequiredItemText2 = ValueYN.N;
         ValueYN isRequiredItemOpt2 = ValueYN.Y;
-        surveyRootOld.setDesc(testDesc2);
-        surveyRootOld.setTitle(testTitle2);
-        SurveyItem itemTextBefore = SurveyTestFactory.findItemByType(surveyRootOld, SurveyItemType.LONG_TEXT);
-        SurveyItem itemOptBefore = SurveyTestFactory.findItemByType(surveyRootOld, SurveyItemType.MULTIPLE_CHOICE);
-        itemTextBefore.setTitle(testTitleText2);
-        itemTextBefore.setDesc(testDescText2);
-        itemTextBefore.setIsRequired(isRequiredItemText2);
-        itemOptBefore.setTitle(testTitleOpt2);
-        itemOptBefore.setDesc(testDescOpt2);
-        itemOptBefore.setIsRequired(isRequiredItemOpt2);
-        itemOptBefore.getItemOptionList().get(0).setDesc(opt12);
-        itemOptBefore.getItemOptionList().get(1).setDesc(opt22);
-        itemOptBefore.getItemOptionList().get(2).setDesc(opt33);
-        surveyRootService.modifySurveyRoot(surveyRootOld);
+        SurveyRoot surveyRootParam = new SurveyRoot();
+        surveyRootParam.setId(surveyRootOld.getId());
+        surveyRootParam.setDesc(testDesc2);
+        surveyRootParam.setTitle(testTitle2);
+        SurveyItem itemTextBefore = SurveyTestFactory.createTextItem(SurveyItemType.LONG_TEXT, testTitleText2, testDescText2, isRequiredItemText2);
+        SurveyItem itemOptBefore = SurveyTestFactory.createOptItem(SurveyItemType.MULTIPLE_CHOICE, testTitleOpt2, testDescOpt2, isRequiredItemOpt2, List.of(opt12, opt22, opt33));
+        surveyRootParam.addSurveyItem(itemTextBefore);
+        surveyRootParam.addSurveyItem(itemOptBefore);
+        surveyRootService.modifySurveyRoot(surveyRootParam);
 
 
         //
@@ -171,4 +157,72 @@ public class SurveyRootTest {
         
     }
 
+
+    @Test
+    public void createSurveyApiTest() {
+//        - 요청 값에는 [설문조사 이름], [설문조사 설명], [설문 받을 항목]이 포함됩니다.
+//        - [설문 받을 항목]은 [항목 이름], [항목 설명], [항목 입력 형태], [항목 필수 여부]의 구성으로 이루어져 있습니다.
+//        - [항목 입력 형태]는 [단답형], [장문형], [단일 선택 리스트], [다중 선택 리스트]의 구성으로 이루어져 있습니다.
+//        - [단일 선택 리스트], [다중 선택 리스트]의 경우 선택 할 수 있는 후보를 요청 값에 포함하여야 합니다.
+//        - [설문 받을 항목]은 1개 ~ 10개까지 포함 할 수 있습니다.
+        //
+        String textSurveyTitle = "create survey title";
+        String textSurveyDesc = "create survey desc";
+        //
+        String textItemTitle1 = "survey item title1";
+        String textItemTitle2 = "survey item title2";
+        String textItemTitle3 = "survey item title3";
+        String textItemTitle4 = "survey item title4";
+        //
+        String textItemDesc1 = "survey item desc1";
+        String textItemDesc2 = "survey item desc2";
+        String textItemDesc3 = "survey item desc3";
+        String textItemDesc4 = "survey item desc4";
+        //
+        ValueYN reqYn1 = ValueYN.Y;
+        ValueYN reqYn2 = ValueYN.N;
+        ValueYN reqYn3 = ValueYN.Y;
+        ValueYN reqYn4 = ValueYN.N;
+        //
+        String textOptDescSingle = "single opt desc1";
+        String textOptDescMulti = "multi opt desc1";
+        //
+        SurveyItem surveyItem1 = new SurveyItem();
+        surveyItem1.setTitle(textItemTitle1);
+        surveyItem1.setDesc(textItemDesc1);
+        surveyItem1.setType(SurveyItemType.SHORT_TEXT);
+        surveyItem1.setIsRequired(reqYn1);
+        SurveyItem surveyItem2 = new SurveyItem();
+        surveyItem2.setTitle(textItemTitle2);
+        surveyItem2.setDesc(textItemDesc2);
+        surveyItem2.setType(SurveyItemType.LONG_TEXT);
+        surveyItem2.setIsRequired(reqYn2);
+        SurveyItem surveyItem3 = new SurveyItem();
+        surveyItem3.setTitle(textItemTitle3);
+        surveyItem3.setDesc(textItemDesc3);
+        surveyItem3.setType(SurveyItemType.SINGLE_CHOICE);
+        surveyItem3.setIsRequired(reqYn3);
+        ItemOption optSingle = new ItemOption();
+        optSingle.setDesc(textOptDescSingle);
+        surveyItem3.addItemOption(optSingle);
+        SurveyItem surveyItem4 = new SurveyItem();
+        surveyItem4.setTitle(textItemTitle4);
+        surveyItem4.setDesc(textItemDesc4);
+        surveyItem4.setType(SurveyItemType.MULTIPLE_CHOICE);
+        surveyItem4.setIsRequired(reqYn4);
+        ItemOption optMulti = new ItemOption();
+        optMulti.setDesc(textOptDescMulti);
+        surveyItem4.addItemOption(optMulti);
+        //
+        SurveyRoot surveyRoot = new SurveyRoot();
+        surveyRoot.setTitle(textSurveyTitle);
+        surveyRoot.setDesc(textSurveyDesc);
+        surveyRoot.addSurveyItem(surveyItem1);
+        surveyRoot.addSurveyItem(surveyItem2);
+        surveyRoot.addSurveyItem(surveyItem3);
+        surveyRoot.addSurveyItem(surveyItem4);
+        //
+        surveyRootService.save(surveyRoot);
+
+    }
 }

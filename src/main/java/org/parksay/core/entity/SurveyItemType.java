@@ -1,10 +1,10 @@
 package org.parksay.core.entity;
 
 public enum SurveyItemType {
-    SHORT_TEXT("짧은 주관식"),
-    LONG_TEXT("긴 주관식"),
-    SINGLE_CHOICE("단일 객관식"),
-    MULTIPLE_CHOICE("다중 객관식");
+    SHORT_TEXT("SHORT"),
+    LONG_TEXT("LONG"),
+    SINGLE_CHOICE("SINGLE"),
+    MULTIPLE_CHOICE("MULTI");
 
     private final String label;
 
