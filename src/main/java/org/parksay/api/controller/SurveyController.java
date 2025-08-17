@@ -1,10 +1,7 @@
 package org.parksay.api.controller;
 
 
-import org.parksay.api.dto.CreateSurveyRootRequest;
-import org.parksay.api.dto.CreateSurveyRootResponse;
-import org.parksay.api.dto.ModifySurveyRootRequest;
-import org.parksay.api.dto.ModifySurveyRootResponse;
+import org.parksay.api.dto.*;
 import org.parksay.core.entity.SurveyRoot;
 import org.parksay.core.service.SurveyRootService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,15 @@ public class SurveyController {
 
     @Autowired
     SurveyRootService surveyRootService;
+
+
+
+    @GetMapping("/{id}")
+    public GetSurveyRootResponse getSurvey(@PathVariable Long id) {
+        SurveyRoot surveyRoot = surveyRootService.findById(id);
+        return new GetSurveyRootResponse(surveyRoot);
+    }
+
 
     @PostMapping
     public CreateSurveyRootResponse createSurvey(@RequestBody CreateSurveyRootRequest request) {
