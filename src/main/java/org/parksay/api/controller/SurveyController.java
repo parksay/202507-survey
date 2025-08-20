@@ -5,6 +5,7 @@ import org.parksay.api.dto.*;
 import org.parksay.core.entity.SurveyRoot;
 import org.parksay.core.service.SurveyRootService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,17 +18,19 @@ public class SurveyController {
 
 
     @GetMapping("/{id}")
-    public GetSurveyRootResponse getSurvey(@PathVariable Long id) {
+    public ResponseEntity<GetSurveyRootResponse> getSurvey(@PathVariable Long id) {
         SurveyRoot surveyRoot = surveyRootService.findById(id);
-        return new GetSurveyRootResponse(surveyRoot);
+        GetSurveyRootResponse response = new GetSurveyRootResponse(surveyRoot);
+        return ResponseEntity.ok(response);
     }
 
 
     @PostMapping
-    public CreateSurveyRootResponse createSurvey(@RequestBody CreateSurveyRootRequest request) {
+    public ResponseEntity<CreateSurveyRootResponse> createSurvey(@RequestBody CreateSurveyRootRequest request) {
         SurveyRoot surveyRoot = request.convertToSurveyRoot();
         SurveyRoot saved = surveyRootService.save(surveyRoot);
-        return new CreateSurveyRootResponse(saved);
+        CreateSurveyRootResponse response = new CreateSurveyRootResponse(saved);
+        return ResponseEntity.ok(response);
     }
 //    {
 //        "title": "test title1",
@@ -35,15 +38,21 @@ public class SurveyController {
 //            "surveyItemList": [
 //            {"title": "test title3", "desc": "test title3", "type": "SHORT_TEXT", "isRequired": "Y"}
 //            , {"title": "test title4", "desc": "test title4", "type": "LONG_TEXT", "isRequired": "N"}
-//            , {"title": "test title5", "desc": "test title5", "type": "SHORT_TEXT", "isRequired": "N"}
+//            , {"title": "test title5", "desc": "test title5", "type": "SINGLE_CHOICE", "isRequired": "N"
+//                , "itemOptionList": [ {"desc":"hello1"}, {"desc":"world1"} ]
+//            }
+//            , {"title": "test title6", "desc": "test title6", "type": "MULTIPLE_CHOICE", "isRequired": "N"
+//                , "itemOptionList": [ {"desc":"hello2"}, {"desc":"world2"} ]
+//            }
 //        ]
 //    }
 
     @PatchMapping
-    public ModifySurveyRootResponse modifySurveyRoot(@RequestBody ModifySurveyRootRequest request) {
+    public ResponseEntity<ModifySurveyRootResponse> modifySurveyRoot(@RequestBody ModifySurveyRootRequest request) {
         SurveyRoot surveyRoot = request.convertToSurveyRoot();
         SurveyRoot modified = surveyRootService.modifySurveyRoot(surveyRoot);
-        return new ModifySurveyRootResponse(modified);
+        ModifySurveyRootResponse response = new ModifySurveyRootResponse(modified);
+        return ResponseEntity.ok(response);
     }
 //    {
 //        "id": "1",

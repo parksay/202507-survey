@@ -1,5 +1,8 @@
 package org.parksay.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -22,10 +25,12 @@ public class AnswerRoot extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="seq_survey_root", nullable = false)
     @Setter(AccessLevel.NONE)
+    @JsonIgnore
     SurveyRoot surveyRoot;
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "answerRoot", cascade = CascadeType.ALL)
+    @JsonManagedReference
     List<AnswerItemBase> answerItemList = new ArrayList<>();
 
 

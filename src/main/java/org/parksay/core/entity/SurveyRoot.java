@@ -41,6 +41,10 @@ public class SurveyRoot extends BaseEntity implements VersionCloneable {
     @JsonManagedReference
     private List<SurveyItem> surveyItemList = new ArrayList<>();
 
+    // 이 entity 를 response 에 담아서 보낼 때 상위-하위가 서로 참조하고 있으면 JSON 으로 직렬화하면서 무한 루프를 돌게 됨
+    // 상위 요소는 필드에 `@JsonManagedReference` 를 붙여주고 하위 요소는 필드에 ` @JsonBackReference` 를 붙여 줌
+    // JSON 으로 변환할 때 그냥 무시하고 싶은 필드는 `@JsonIgnore` 를 붙여줌
+    
 
     public void addSurveyItem(SurveyItem surveyItem) {
         if(!this.surveyItemList.contains(surveyItem)) {

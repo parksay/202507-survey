@@ -1,5 +1,6 @@
 package org.parksay.core.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -7,6 +8,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 import java.util.List;
+//
+//@JsonTypeInfo(
+//        use = JsonTypeInfo.Id.NAME,
+//        include = JsonTypeInfo.As.PROPERTY,
+//        property = "type"
+//)
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = AnswerItemOpt.class, name = "opt"),
+//        @JsonSubTypes.Type(value = AnswerItemText.class, name = "txt")
+//})
 
 @Data
 @EqualsAndHashCode(callSuper=false)
@@ -22,10 +33,12 @@ public class AnswerItemBase extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "seq_answer_root", nullable = false)
     @Setter(AccessLevel.NONE)
+    @JsonBackReference
     private AnswerRoot answerRoot;
 
     @ManyToOne
     @JoinColumn(name="seq_survey_item", nullable = false)
+    @JsonIgnore
     private SurveyItem surveyItem;
 
     public void changeAnswerRoot(AnswerRoot answerRoot) {
@@ -41,6 +54,14 @@ public class AnswerItemBase extends BaseEntity {
     @Override
     public String toString() {
         return this.getClass().getSimpleName();
+    }
+
+    @JsonIgnore
+    public boolean isOpt() {
+        if(this.surveyItem.getType() == SurveyItemType.SINGLE_CHOICE || this.surveyItem.getType() == SurveyItemType.MULTIPLE_CHOICE) {
+            return true;
+        }
+        return false;
     }
 
     // 상속 관계로 설계하기 전의 문제점
